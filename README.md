@@ -50,8 +50,6 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
 
 Puedes comenzar a editar la página modificando `app/page.tsx`. La página se actualizará automáticamente a medida que editas el archivo.
 
-Este proyecto utiliza `next/font` para optimizar y cargar automáticamente Geist, una nueva familia de fuentes para Vercel.
-
 ## Estructura del Proyecto
 
 - `src/app`: Contiene los componentes y páginas de Next.js.
@@ -89,5 +87,5 @@ Para aprender más sobre las tecnologías utilizadas en este proyecto, consulta 
 
 La forma más fácil de desplegar tu aplicación Next.js es usar la [Plataforma Vercel](https://vercel.com) de los creadores de Next.js.
 
-Consulta nuestra [documentación de despliegue de Next.js](https://nextjs.org/docs/deployment) para más detalles.
+Consulta la [documentación de despliegue de Next.js](https://nextjs.org/docs/deployment) para más detalles.
 
