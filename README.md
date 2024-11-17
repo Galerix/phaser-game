@@ -4,7 +4,37 @@ Este es un proyecto que combina [Phaser](https://phaser.io) para la creación de
 
 ## Comenzando
 
-Primero, ejecuta el servidor de desarrollo:
+Antes de comenzar, asegúrate de configurar las variables de entorno necesarias. Crea un archivo `.env` en la raíz del proyecto y añade las siguientes variables:
+
+```bash
+DATABASE_URL="postgresql://user:password@host:port/database
+```
+
+Después de configurar las variables de entorno, ejecuta el siguiente comando para generar el cliente de Prisma:
+
+```bash
+npx prisma generate
+# o
+yarn prisma generate
+# o
+pnpm prisma generate
+# o
+bun prisma generate
+```
+
+Por último, ejecuta el siguiente comando para aplicar las migraciones de la base de datos:
+
+```bash
+npx prisma migrate dev
+# o
+yarn prisma migrate dev
+# o
+pnpm prisma migrate dev
+# o
+bun prisma migrate dev
+```
+
+Finalmente, ejecuta el servidor de desarrollo:
 
 ```bash
 npm run dev

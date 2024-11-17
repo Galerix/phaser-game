@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getScores } from "../database/get-scores";
 
 const ScoreBoard = async () => {
@@ -5,11 +6,11 @@ const ScoreBoard = async () => {
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-400 font-mono p-4 sm:p-8">
-      <div className="container mx-auto max-w-2xl">
+      <div className="container mx-auto max-w-2xl flex flex-col h-full">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-300 border-b border-gray-800 pb-2">
           Mejores puntuaciones
         </h1>
-        <div className="space-y-2">
+        <div className="space-y-2 flex-1 h-full">
           {scores.map((score, index) => (
             <div
               key={score.id}
@@ -22,6 +23,23 @@ const ScoreBoard = async () => {
               <span className="text-cyan-400 font-bold">{score.score}</span>
             </div>
           ))}
+        </div>
+        {/* Desarrollado por */}
+        <div className="mt-8 text-center text-sm text-gray-500">
+          Desarrollado por{" "}
+          <Link
+            href="https://github.com/Galerix"
+            className="text-cyan-400 hover:underline"
+          >
+            Galerix
+          </Link>{" "}
+          puedes encontrar el código fuente en{" "}
+          <Link
+            href="https://github.com/Galerix/phaser-game"
+            className="text-cyan-400 hover:underline"
+          >
+            GitHub
+          </Link>
         </div>
       </div>
     </div>
