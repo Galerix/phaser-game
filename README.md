@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Phaser Game with Next.js
 
-## Getting Started
+Este es un proyecto que combina [Phaser](https://phaser.io) para la creación de juegos y [Next.js](https://nextjs.org) para la interfaz de usuario y la gestión del backend. El juego incluye características como un sistema de puntuación, enemigos que disparan, y un tablero de puntuaciones.
 
-First, run the development server:
+## Comenzando
+
+Primero, ejecuta el servidor de desarrollo:
 
 ```bash
 npm run dev
-# or
+# o
 yarn dev
-# or
+# o
 pnpm dev
-# or
+# o
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Puedes comenzar a editar la página modificando `app/page.tsx`. La página se actualizará automáticamente a medida que editas el archivo.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Este proyecto utiliza `next/font` para optimizar y cargar automáticamente Geist, una nueva familia de fuentes para Vercel.
 
-## Learn More
+## Estructura del Proyecto
 
-To learn more about Next.js, take a look at the following resources:
+- `src/app`: Contiene los componentes y páginas de Next.js.
+- `src/game`: Contiene la lógica del juego, incluyendo escenas, objetos y eventos.
+- `src/database`: Contiene la configuración y funciones de Prisma para la base de datos.
+- `public`: Contiene archivos estáticos como imágenes y fuentes.
+- `prisma`: Contiene el esquema de Prisma y las migraciones de la base de datos.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Características
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Phaser**: Utilizado para la lógica del juego.
+- **Next.js**: Utilizado para la interfaz de usuario y el backend.
+- **Prisma**: Utilizado para la gestión de la base de datos.
+- **Tailwind CSS**: Utilizado para el diseño y estilos.
 
-## Deploy on Vercel
+## Scripts Disponibles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `dev`: Inicia el servidor de desarrollo.
+- `build`: Construye la aplicación para producción.
+- `start`: Inicia el servidor en modo producción.
+- `lint`: Ejecuta ESLint para encontrar y arreglar problemas en el código.
+- `postinstall`: Genera el cliente de Prisma.
+- `vercel-build`: Script de construcción para Vercel.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Aprender Más
+
+Para aprender más sobre las tecnologías utilizadas en este proyecto, consulta los siguientes recursos:
+
+- [Documentación de Next.js](https://nextjs.org/docs)
+- [Documentación de Phaser](https://phaser.io/docs)
+- [Documentación de Prisma](https://www.prisma.io/docs)
+- [Documentación de Tailwind CSS](https://tailwindcss.com/docs)
+
+## Despliegue en Vercel
+
+La forma más fácil de desplegar tu aplicación Next.js es usar la [Plataforma Vercel](https://vercel.com) de los creadores de Next.js.
+
+Consulta nuestra [documentación de despliegue de Next.js](https://nextjs.org/docs/deployment) para más detalles.
+
