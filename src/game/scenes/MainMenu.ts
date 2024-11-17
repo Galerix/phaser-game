@@ -29,13 +29,13 @@ export class MainMenu extends Scene {
       .setOrigin(0.5);
 
     const startText = this.add
-      .text(width / 2, height / 2 + 100, "Haga clic para comenzar", {
+      .text(width / 2, height / 2 + 100, "Pulsa Enter para comenzar", {
         fontSize: "32px",
         color: "#ffffff",
       })
       .setOrigin(0.5);
 
-    this.input.on("pointerdown", () => {
+    this.input.keyboard?.on("keydown-ENTER", () => {
       const playerName = (nameInput.node as HTMLInputElement).value;
       if (playerName.trim() !== "") {
         this.scene.start("GameScene", { playerName });
