@@ -1,7 +1,0 @@
--- CreateTable
-CREATE TABLE "Score" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "playerName" TEXT NOT NULL DEFAULT 'Player',
-    "score" INTEGER NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
