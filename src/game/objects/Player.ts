@@ -151,7 +151,7 @@ export class Player extends Phaser.GameObjects.Rectangle {
       duration: 500,
       onUpdate: (tween) => {
         const value = Math.floor(tween.getValue());
-        this.setFillStyle(value % 2 === 0 ? 0xffff00 : 0x00ff00);
+        this.setFillStyle(value % 2 === 0 ? 0x800080 : 0x00ff00);
       },
       onComplete: () => {
         this.damageCooldown = false;

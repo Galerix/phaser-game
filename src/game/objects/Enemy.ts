@@ -106,7 +106,7 @@ export class Enemy extends Phaser.GameObjects.Rectangle {
     if (bullet) {
       // Ajustar la forma de la bala y propiedades
       bullet.setPosition(this.x, this.y);
-      bullet.setFillStyle(0xffff00); // Bala de enemigo en azul
+      bullet.setFillStyle(0x800080); // Bala de enemigo en morado
       bullet.setSize(10, 10);
       bullet.setActive(true);
       bullet.setVisible(true);
