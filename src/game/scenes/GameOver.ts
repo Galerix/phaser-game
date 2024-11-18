@@ -1,25 +1,33 @@
-import Phaser from "phaser";
+import { Scene } from "phaser";
+import { EventBus } from "../EventBus";
 
-export class GameOver extends Phaser.Scene {
+export class GameOver extends Scene {
   constructor() {
-    super({ key: "GameOver" });
+    super("GameOver");
   }
 
   create() {
     const { width, height } = this.scale;
 
-    // Game Over text
+    // Dark and animated background
+    const graphics = this.add.graphics();
+    graphics.fillStyle(0x000000, 0.9);
+    graphics.fillRect(0, 0, width, height);
+
+    // Main "Game Over" text
     const gameOverText = this.add
-      .text(width / 2, height / 2 - 100, "Game Over", {
+      .text(width / 2, height / 3, "GAME OVER", {
         fontSize: "64px",
-        color: "#38bdf8", // Cyan color for accent
-        fontFamily: "Arial",
+        color: "#38bdf8",
+        fontFamily: "Arial Black",
         fontStyle: "bold",
+        stroke: "#000",
+        strokeThickness: 8,
         shadow: {
           offsetX: 4,
           offsetY: 4,
           color: "#000000",
-          blur: 15,
+          blur: 10,
           fill: true,
         },
       })
@@ -30,23 +38,23 @@ export class GameOver extends Phaser.Scene {
       targets: gameOverText,
       alpha: { from: 0.6, to: 1 },
       ease: "Sine.easeInOut",
-      duration: 1000,
+      duration: 800,
       yoyo: true,
       repeat: -1,
     });
 
     // Instructions text to restart
     const restartText = this.add
-      .text(width / 2, height / 2 + 50, "Click or press Enter to restart", {
-        fontSize: "28px",
-        color: "#e2e8f0", // Light gray color for instructions
+      .text(width / 2, height / 2, "Click or press Enter to restart", {
+        fontSize: "32px",
+        color: "#ffffff",
         fontFamily: "Arial",
         fontStyle: "bold",
         shadow: {
           offsetX: 3,
           offsetY: 3,
           color: "#000000",
-          blur: 10,
+          blur: 5,
           fill: true,
         },
       })
@@ -57,20 +65,20 @@ export class GameOver extends Phaser.Scene {
       targets: restartText,
       alpha: { from: 0.5, to: 1 },
       ease: "Sine.easeInOut",
-      duration: 1000,
+      duration: 800,
       yoyo: true,
       repeat: -1,
     });
 
-    // Button to go to scoreboards
     const scoreboardsButton = this.add
-      .text(width / 2, height / 2 + 150, "Go to Scoreboards", {
+      .text(width / 2, height / 2 + 120, "Go to Scoreboards", {
         fontSize: "28px",
         color: "#38bdf8", // Cyan color for accent
         fontFamily: "Arial",
         fontStyle: "bold",
         backgroundColor: "#1e293b", // Dark blue-gray background for the button
         padding: { x: 15, y: 8 },
+
         shadow: {
           offsetX: 3,
           offsetY: 3,
@@ -93,14 +101,13 @@ export class GameOver extends Phaser.Scene {
       scoreboardsButton.setStyle({ backgroundColor: "#1e293b" });
     });
 
-    // Blinking effect for the scoreboards button
-    this.tweens.add({
-      targets: scoreboardsButton,
-      alpha: { from: 0.7, to: 1 },
-      ease: "Sine.easeInOut",
-      duration: 1000,
-      yoyo: true,
-      repeat: -1,
+    // Keyboard or click event to restart
+    this.input.on("pointerdown", () => {
+      EventBus.emit("game-over");
+    });
+
+    this.input.keyboard?.on("keydown-ENTER", () => {
+      EventBus.emit("game-over");
     });
   }
 }

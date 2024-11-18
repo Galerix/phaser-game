@@ -45,7 +45,8 @@ const PhaserGame = forwardRef<IRefPhaserGame>(function PhaserGame({}, ref) {
     });
   }, [ref]);
 
-  return <div id="game-container" />;
+  return <div id="game-container" className="" />;
 });
 
 export default PhaserGame;
+

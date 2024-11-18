@@ -30,7 +30,7 @@ export class MainMenu extends Scene {
     const title = this.add
       .text(width / 2, height / 4, "Space Shooter Game", {
         fontSize: "48px",
-        color: "#00e5ff",
+        color: "#38bdf8",
         fontFamily: "Arial Black",
         fontStyle: "bold",
         stroke: "#000",
@@ -57,7 +57,7 @@ export class MainMenu extends Scene {
 
     // Enter your name
     this.add
-      .text(width / 2, height / 2 - 100, "Enter your name:", {
+      .text(width / 2, height / 2 - 40, "Enter your name:", {
         fontSize: "28px",
         color: "#ffffff",
         fontFamily: "Arial",
@@ -74,7 +74,7 @@ export class MainMenu extends Scene {
 
     // Name input
     const nameInput = this.add
-      .dom(width / 2, height / 2, "input", {
+      .dom(width / 2, height / 2 + 20, "input", {
         type: "text",
         name: "name",
         fontSize: "24px",
@@ -89,7 +89,7 @@ export class MainMenu extends Scene {
 
     // Start text
     const startText = this.add
-      .text(width / 2, height / 2 + 150, "Press Enter to start", {
+      .text(width / 2, height / 2 + 150, "Click or press Enter to start", {
         fontSize: "28px",
         color: "#00ff88",
         fontFamily: "Arial",
@@ -116,6 +116,15 @@ export class MainMenu extends Scene {
 
     // Keyboard event to start the game
     this.input.keyboard?.on("keydown-ENTER", () => {
+      const playerName = (nameInput.node as HTMLInputElement).value;
+      if (playerName.trim() !== "") {
+        this.scene.start("GameScene", { playerName });
+      } else {
+        startText.setText("Please enter your name").setColor("#ff4444");
+      }
+    });
+
+    this.input.on("pointerdown", () => {
       const playerName = (nameInput.node as HTMLInputElement).value;
       if (playerName.trim() !== "") {
         this.scene.start("GameScene", { playerName });
