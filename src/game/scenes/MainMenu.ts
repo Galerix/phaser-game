@@ -8,6 +8,9 @@ export class MainMenu extends Scene {
   create() {
     const { width, height } = this.scale;
 
+    // Adjust scaling factor to make scene responsive
+    const scaleFactor = Math.min(width / 800, height / 600);
+
     // Animated galaxy background
     const graphics = this.add.graphics();
     const numStars = 200;
@@ -18,7 +21,10 @@ export class MainMenu extends Scene {
     for (let i = 0; i < numStars; i++) {
       const x = Phaser.Math.Between(0, width);
       const y = Phaser.Math.Between(0, height);
-      const radius = Phaser.Math.FloatBetween(0.5, 2);
+      const radius = Phaser.Math.FloatBetween(
+        0.5 * scaleFactor,
+        2 * scaleFactor
+      );
       graphics.fillStyle(0xffffff, 1);
       graphics.fillCircle(x, y, radius);
     }
@@ -29,17 +35,17 @@ export class MainMenu extends Scene {
     // Main title with futuristic effect
     const title = this.add
       .text(width / 2, height / 4, "Space Shooter Game", {
-        fontSize: "48px",
+        fontSize: `${48 * scaleFactor}px`,
         color: "#00e5ff",
         fontFamily: "Arial Black",
         fontStyle: "bold",
         stroke: "#000",
-        strokeThickness: 6,
+        strokeThickness: 6 * scaleFactor,
         shadow: {
-          offsetX: 5,
-          offsetY: 5,
+          offsetX: 5 * scaleFactor,
+          offsetY: 5 * scaleFactor,
           color: "#000000",
-          blur: 10,
+          blur: 10 * scaleFactor,
           fill: true,
         },
       })
@@ -57,16 +63,16 @@ export class MainMenu extends Scene {
 
     // Enter your name
     this.add
-      .text(width / 2, height / 2 - 100, "Enter your name:", {
-        fontSize: "28px",
+      .text(width / 2, height / 2 - 100 * scaleFactor, "Enter your name:", {
+        fontSize: `${28 * scaleFactor}px`,
         color: "#ffffff",
         fontFamily: "Arial",
         fontStyle: "bold",
         shadow: {
-          offsetX: 3,
-          offsetY: 3,
+          offsetX: 3 * scaleFactor,
+          offsetY: 3 * scaleFactor,
           color: "#000000",
-          blur: 5,
+          blur: 5 * scaleFactor,
           fill: true,
         },
       })
@@ -77,28 +83,28 @@ export class MainMenu extends Scene {
       .dom(width / 2, height / 2, "input", {
         type: "text",
         name: "name",
-        fontSize: "24px",
-        padding: "10px",
+        fontSize: `${24 * scaleFactor}px`,
+        padding: `${10 * scaleFactor}px`,
         textAlign: "center",
         backgroundColor: "#222",
         color: "#ffffff",
         border: "2px solid #00e5ff",
-        borderRadius: "10px",
+        borderRadius: `${10 * scaleFactor}px`,
       })
       .setOrigin(0.5);
 
     // Start text
     const startText = this.add
-      .text(width / 2, height / 2 + 150, "Press Enter to start", {
-        fontSize: "28px",
+      .text(width / 2, height / 2 + 150 * scaleFactor, "Press Enter to start", {
+        fontSize: `${28 * scaleFactor}px`,
         color: "#00ff88",
         fontFamily: "Arial",
         fontStyle: "bold",
         shadow: {
-          offsetX: 3,
-          offsetY: 3,
+          offsetX: 3 * scaleFactor,
+          offsetY: 3 * scaleFactor,
           color: "#000000",
-          blur: 5,
+          blur: 5 * scaleFactor,
           fill: true,
         },
       })
