@@ -11,7 +11,12 @@ function Game() {
   // Referencia al componente PhaserGame (exponiendo la instancia del juego)
   const phaserRef = useRef<IRefPhaserGame | null>(null);
 
-  return <PhaserGame ref={phaserRef} />;
+  return (
+    <div className="h-screen">
+      <PhaserGame ref={phaserRef} />
+    </div>
+  );
 }
 
 export default Game;
+
