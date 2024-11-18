@@ -125,6 +125,14 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     this.scene.physics.moveToObject(bullet, playerPosition, 200);
 
+    // Make the bullet destroy itself automatically after a certain time
+    this.scene.time.addEvent({
+      delay: 2000, // Duration in milliseconds
+      callback: () => {
+        bullet.destroy();
+      },
+    });
+
     bulletBody.world.on("worldbounds", (body: Phaser.Physics.Arcade.Body) => {
       if (body === bulletBody) {
         bullet.destroy();
