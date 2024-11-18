@@ -10,6 +10,12 @@ const ScoreBoard = async () => {
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-300 border-b border-gray-800 pb-2">
           High Scores
         </h1>
+        {/* Back to game */}
+        <Link href="/" className="text-cyan-400 hover:underline mb-4">
+          Back to game
+        </Link>
+
+        {/* Score list */}
         <div className="space-y-2 flex-1 h-full">
           {scores.map((score, index) => (
             <div

@@ -3,23 +3,52 @@ import { GameScene } from "../scenes/GameScene";
 import { addScore } from "@/database/add-score";
 
 export class Player extends Phaser.GameObjects.Sprite {
-  wasdKeys: {
+  movementKeys: {
     up: Phaser.Input.Keyboard.Key;
     down: Phaser.Input.Keyboard.Key;
     left: Phaser.Input.Keyboard.Key;
     right: Phaser.Input.Keyboard.Key;
   };
-  cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+  shootingKeys: {
+    left: Phaser.Input.Keyboard.Key;
+    right: Phaser.Input.Keyboard.Key;
+    up: Phaser.Input.Keyboard.Key;
+    down: Phaser.Input.Keyboard.Key;
+  };
+
+  shootCooldown: number;
+  lastShotTime: number;
   bullets: Phaser.Physics.Arcade.Group;
   health: number;
   damageCooldown: boolean;
   playerName: string;
 
-  constructor(scene: Scene, x: number, y: number, playerName: string) {
+  constructor(
+    scene: Scene,
+    x: number,
+    y: number,
+    playerName: string,
+    movementKeys: {
+      up: Phaser.Input.Keyboard.Key;
+      down: Phaser.Input.Keyboard.Key;
+      left: Phaser.Input.Keyboard.Key;
+      right: Phaser.Input.Keyboard.Key;
+    },
+    shootingKeys: {
+      left: Phaser.Input.Keyboard.Key;
+      right: Phaser.Input.Keyboard.Key;
+      up: Phaser.Input.Keyboard.Key;
+      down: Phaser.Input.Keyboard.Key;
+    }
+  ) {
     super(scene, x, y, "player");
     this.health = 3;
+    this.shootCooldown = 200;
+    this.lastShotTime = 0;
     this.damageCooldown = false;
     this.playerName = playerName;
+    this.movementKeys = movementKeys;
+    this.shootingKeys = shootingKeys;
 
     // Add the player to the scene and add physics
     scene.add.existing(this);
@@ -28,28 +57,13 @@ export class Player extends Phaser.GameObjects.Sprite {
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.setSize(24, 24);
 
+    // Create the player's cursor keys
+
     // Player's bullet group
     this.bullets = this.scene.physics.add.group({
       classType: Phaser.GameObjects.Sprite,
       runChildUpdate: true,
     });
-
-    // Ensure that keys are only set if the input system is ready
-    if (this.scene.input.keyboard) {
-      this.cursors = this.scene.input.keyboard.createCursorKeys();
-      this.wasdKeys = {
-        up: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-        down: this.scene.input.keyboard.addKey(
-          Phaser.Input.Keyboard.KeyCodes.S
-        ),
-        left: this.scene.input.keyboard.addKey(
-          Phaser.Input.Keyboard.KeyCodes.A
-        ),
-        right: this.scene.input.keyboard.addKey(
-          Phaser.Input.Keyboard.KeyCodes.D
-        ),
-      };
-    }
   }
 
   update() {
@@ -62,15 +76,15 @@ export class Player extends Phaser.GameObjects.Sprite {
     let velocityY = 0;
 
     // Movement control
-    if (this.wasdKeys.left.isDown) {
+    if (this.movementKeys.left.isDown) {
       velocityX = -200;
-    } else if (this.wasdKeys.right.isDown) {
+    } else if (this.movementKeys.right.isDown) {
       velocityX = 200;
     }
 
-    if (this.wasdKeys.up.isDown) {
+    if (this.movementKeys.up.isDown) {
       velocityY = -200;
-    } else if (this.wasdKeys.down.isDown) {
+    } else if (this.movementKeys.down.isDown) {
       velocityY = 200;
     }
 
@@ -85,12 +99,15 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     // Shoot bullets with SPACE or arrow keys
     if (
-      Phaser.Input.Keyboard.JustDown(this.cursors.left) ||
-      Phaser.Input.Keyboard.JustDown(this.cursors.right) ||
-      Phaser.Input.Keyboard.JustDown(this.cursors.up) ||
-      Phaser.Input.Keyboard.JustDown(this.cursors.down)
+      this.shootingKeys.left.isDown ||
+      this.shootingKeys.right.isDown ||
+      this.shootingKeys.up.isDown ||
+      this.shootingKeys.down.isDown
     ) {
-      this.shootBullet();
+      if (this.scene.time.now - this.lastShotTime > this.shootCooldown) {
+        this.shootBullet();
+        this.lastShotTime = this.scene.time.now;
+      }
     }
   }
 
@@ -115,22 +132,22 @@ export class Player extends Phaser.GameObjects.Sprite {
       const playerVelocity = this.body as Phaser.Physics.Arcade.Body;
       const speed = 200;
 
-      if (this.cursors.left.isDown) {
+      if (this.shootingKeys.left.isDown) {
         bulletBody.setVelocity(-speed, playerVelocity.velocity.y / 2);
         bullet.rotation =
           Math.atan2(playerVelocity.velocity.y / 2, -speed) +
           Phaser.Math.DegToRad(90);
-      } else if (this.cursors.right.isDown) {
+      } else if (this.shootingKeys.right.isDown) {
         bulletBody.setVelocity(speed, playerVelocity.velocity.y / 2);
         bullet.rotation =
           Math.atan2(playerVelocity.velocity.y / 2, speed) +
           Phaser.Math.DegToRad(90);
-      } else if (this.cursors.up.isDown) {
+      } else if (this.shootingKeys.up.isDown) {
         bulletBody.setVelocity(playerVelocity.velocity.x / 2, -speed);
         bullet.rotation =
           Math.atan2(-speed, playerVelocity.velocity.x / 2) +
           Phaser.Math.DegToRad(90);
-      } else if (this.cursors.down.isDown) {
+      } else if (this.shootingKeys.down.isDown) {
         bulletBody.setVelocity(playerVelocity.velocity.x / 2, speed);
         bullet.rotation =
           Math.atan2(speed, playerVelocity.velocity.x / 2) +

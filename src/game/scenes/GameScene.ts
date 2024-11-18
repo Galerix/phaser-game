@@ -1,6 +1,7 @@
 import { Scene } from "phaser";
 import { Player } from "../objects/Player";
 import { Enemy } from "../objects/Enemy";
+import VirtualJoystick from "phaser3-rex-plugins/plugins/virtualjoystick.js";
 
 export class GameScene extends Scene {
   player: Player;
@@ -132,7 +133,64 @@ export class GameScene extends Scene {
   }
 
   private createPlayer(width: number, height: number) {
-    this.player = new Player(this, width / 2, height / 2, this.playerName);
+    // Virtual joystick
+
+    let movementKeys: {
+      up: Phaser.Input.Keyboard.Key;
+      down: Phaser.Input.Keyboard.Key;
+      left: Phaser.Input.Keyboard.Key;
+      right: Phaser.Input.Keyboard.Key;
+    };
+    let shootingKeys: {
+      left: Phaser.Input.Keyboard.Key;
+      right: Phaser.Input.Keyboard.Key;
+      up: Phaser.Input.Keyboard.Key;
+      down: Phaser.Input.Keyboard.Key;
+    };
+
+    if (this.game.device.os.desktop && this.input.keyboard) {
+      movementKeys = {
+        up: this.input.keyboard.addKey("W"),
+        down: this.input.keyboard.addKey("S"),
+        left: this.input.keyboard.addKey("A"),
+        right: this.input.keyboard.addKey("D"),
+      };
+
+      shootingKeys = {
+        up: this.input.keyboard.addKey("UP"),
+        down: this.input.keyboard.addKey("DOWN"),
+        left: this.input.keyboard.addKey("LEFT"),
+        right: this.input.keyboard.addKey("RIGHT"),
+      };
+    } else {
+      const leftJoystick = new VirtualJoystick(this, {
+        x: 100,
+        y: height - 100,
+        radius: 50,
+        base: this.add.circle(0, 0, 50, 0x888888),
+        thumb: this.add.circle(0, 0, 25, 0xcccccc),
+      });
+
+      const rightJoystick = new VirtualJoystick(this, {
+        x: width - 100,
+        y: height - 100,
+        radius: 50,
+        base: this.add.circle(0, 0, 50, 0x888888),
+        thumb: this.add.circle(0, 0, 25, 0xcccccc),
+      });
+
+      movementKeys = leftJoystick.createCursorKeys();
+      shootingKeys = rightJoystick.createCursorKeys();
+    }
+
+    this.player = new Player(
+      this,
+      width / 2,
+      height / 2,
+      this.playerName,
+      movementKeys,
+      shootingKeys
+    );
     this.player.play("player-idle");
   }
 
