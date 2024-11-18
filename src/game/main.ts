@@ -16,16 +16,16 @@ const config: Phaser.Types.Core.GameConfig = {
   physics: {
     default: "arcade",
     arcade: {
-      debug: false, // Puedes cambiar a `true` si necesitas ver las áreas de colisión durante la depuración
+      debug: false, // You can change to `true` if you need to see collision areas during debugging
     },
   },
   dom: {
     createContainer: true,
   },
-  scene: [Boot, MainMenu, GameScene, GameOver], // Añadimos todas las escenas en orden
+  scene: [Boot, MainMenu, GameScene, GameOver], // Add all scenes in order
 };
 
-// Iniciar el juego con la configuración definida
+// Start the game with the defined configuration
 const StartGame = (parent: string) => {
   return new PhaserGame({ ...config, parent });
 };

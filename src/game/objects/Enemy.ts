@@ -2,50 +2,57 @@ import { Scene } from "phaser";
 import { Player } from "./Player";
 import { GameScene } from "../scenes/GameScene";
 
-export class Enemy extends Phaser.GameObjects.Rectangle {
-  health: number;
+export class Enemy extends Phaser.GameObjects.Sprite {
+  health: number = 3;
   bullets: Phaser.Physics.Arcade.Group;
-  scene: Scene;
-  damageCooldown: boolean;
+  damageCooldown: boolean = false;
+  speed: number = 50;
 
   constructor(scene: Scene, x: number, y: number) {
-    super(scene, x, y, 40, 40, 0xff0000); // Enemigo como un rectángulo rojo
+    super(scene, x, y, "enemy");
     this.scene = scene;
-    this.health = 3; // Salud del enemigo
-    this.damageCooldown = false;
 
-    // Añadir el enemigo a la escena y añadir física
-    scene.add.existing(this);
-    scene.physics.add.existing(this);
+    this.initPhysics();
+    this.initShooting();
+    this.registerEvents();
 
-    const body = this.body as Phaser.Physics.Arcade.Body;
-    body.setCollideWorldBounds(true); // Mantener al enemigo dentro de los límites
-    body.onWorldBounds = false; // No destruir al tocar el límite
-    body.setImmovable(true); // Para que no colisione y sea empujado por otros objetos
-
-    // Grupo de balas del enemigo
-    this.bullets = this.scene.physics.add.group({
-      classType: Phaser.GameObjects.Rectangle,
-      runChildUpdate: true,
-    });
-
-    // Iniciar un temporizador para disparar balas al jugador cada cierto intervalo
-    this.startShooting();
-
-    // Mensaje de consola para saber cuándo se crea el enemigo
     console.log(`Enemy created at position (${x}, ${y})`);
   }
 
-  update(player: Player) {
-    if (this.health <= 0) {
-      console.log(`Enemy destroyed at position (${this.x}, ${this.y})`); // Mensaje de consola para saber cuándo se destruye
-      this.destroy(); // Destruir el enemigo si se queda sin salud
-      return;
-    }
+  private initPhysics() {
+    this.scene.add.existing(this);
+    this.scene.physics.add.existing(this);
 
-    // Movimiento hacia el jugador
-    if (player && player.active) {
-      this.scene.physics.moveToObject(this, player, 50);
+    // Enemy bullet group
+    this.bullets = this.scene.physics.add.group({
+      classType: Phaser.GameObjects.Sprite,
+      runChildUpdate: true,
+    });
+  }
+
+  private initShooting() {
+    // Start a timer to shoot bullets at the player at regular intervals
+    this.scene.time.addEvent({
+      delay: 2000, // Shoot every 2 seconds
+      callback: this.shootBullet,
+      callbackScope: this,
+      loop: true,
+    });
+  }
+
+  private registerEvents() {
+    this.on("animationcomplete", () => {
+      this.destroy();
+      console.log("Enemy destroyed");
+    });
+  }
+
+  update(player: Player) {
+    if (player.active) {
+      this.scene.physics.moveToObject(this, player, this.speed);
+      this.rotation =
+        Phaser.Math.Angle.Between(this.x, this.y, player.x, player.y) -
+        Math.PI / 2;
     }
   }
 
@@ -54,84 +61,75 @@ export class Enemy extends Phaser.GameObjects.Rectangle {
 
     this.health -= 1;
     this.damageCooldown = true;
+    console.log(`Enemy took damage. Remaining health: ${this.health}`);
 
-    // Blink effect with color change
+    if (this.health <= 0) {
+      this.handleDeath();
+    } else {
+      this.handleDamageBlink();
+    }
+  }
+
+  private handleDeath() {
+    this.setTexture("explosion");
+    this.play("explosion");
+    this.speed = 0;
+  }
+
+  private handleDamageBlink() {
     this.scene.tweens.addCounter({
       from: 0,
       to: 5,
       duration: 500,
       onUpdate: (tween) => {
         const value = Math.floor(tween.getValue());
-        this.setFillStyle(value % 2 === 0 ? 0x0000ff : 0xff0000); // Alternate between blue and original color
+        this.setAlpha(value % 2 === 0 ? 0 : 1);
       },
       onComplete: () => {
         this.damageCooldown = false;
-        this.setFillStyle(0xff0000); // Ensure the enemy is fully visible after blinking
+        this.setAlpha(1);
       },
-    });
-
-    console.log(`Enemy took damage. Remaining health: ${this.health}`); // Mensaje para ver el daño que recibe
-    if (this.health <= 0) {
-      this.destroy();
-    }
-  }
-
-  startShooting() {
-    this.scene.time.addEvent({
-      delay: 2000, // Disparar cada 2 segundos
-      callback: () => {
-        if (this.active) {
-          this.shootBullet();
-        }
-      },
-      callbackScope: this,
-      loop: true,
     });
   }
 
-  shootBullet() {
-    if (!this.active) return; // Evitar disparar si el enemigo ya fue destruido
+  private shootBullet() {
+    if (!this.active) return; // Avoid shooting if the enemy has already been destroyed
 
     const playerPosition = {
       x: (this.scene as GameScene).player.x,
       y: (this.scene as GameScene).player.y,
     };
 
-    // Crear una bala desde la posición del enemigo
     const bullet = this.bullets.get(
       this.x,
       this.y
-    ) as Phaser.GameObjects.Rectangle;
+    ) as Phaser.GameObjects.Sprite;
 
     if (bullet) {
-      // Ajustar la forma de la bala y propiedades
-      bullet.setPosition(this.x, this.y);
-      bullet.setFillStyle(0x800080); // Bala de enemigo en morado
-      bullet.setSize(10, 10);
-      bullet.setActive(true);
-      bullet.setVisible(true);
-
-      // Añadir física para que la bala se mueva hacia el jugador
-      this.scene.physics.add.existing(bullet);
-      const bulletBody = bullet.body as Phaser.Physics.Arcade.Body;
-
-      if (bulletBody) {
-        bulletBody.setSize(10, 10);
-        // Calcular la dirección hacia el jugador y establecer la velocidad
-        this.scene.physics.moveToObject(bullet, playerPosition, 200);
-        bulletBody.setCollideWorldBounds(true);
-        bulletBody.onWorldBounds = true;
-
-        // Evento que destruye la bala cuando sale del mundo
-        bulletBody.world.on(
-          "worldbounds",
-          (body: Phaser.Physics.Arcade.Body) => {
-            if (body === bulletBody) {
-              bullet.destroy(); // Reciclar la bala
-            }
-          }
-        );
-      }
+      this.configureBullet(bullet, playerPosition);
     }
   }
+
+  private configureBullet(
+    bullet: Phaser.GameObjects.Sprite,
+    playerPosition: { x: number; y: number }
+  ) {
+    bullet.setPosition(this.x, this.y);
+    bullet.setTexture("laser-bolts");
+    bullet.setActive(true).setVisible(true).setSize(16, 16);
+    bullet.play("enemy-shoot");
+
+    this.scene.physics.add.existing(bullet);
+    const bulletBody = bullet.body as Phaser.Physics.Arcade.Body;
+    bulletBody.setSize(16, 16);
+
+    this.scene.physics.moveToObject(bullet, playerPosition, 200);
+
+    bulletBody.world.on("worldbounds", (body: Phaser.Physics.Arcade.Body) => {
+      if (body === bulletBody) {
+        bullet.destroy();
+      }
+    });
+  }
 }
+

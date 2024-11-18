@@ -2,7 +2,7 @@ import { Scene } from "phaser";
 import { GameScene } from "../scenes/GameScene";
 import { addScore } from "@/database/add-score";
 
-export class Player extends Phaser.GameObjects.Rectangle {
+export class Player extends Phaser.GameObjects.Sprite {
   wasdKeys: {
     up: Phaser.Input.Keyboard.Key;
     down: Phaser.Input.Keyboard.Key;
@@ -16,26 +16,25 @@ export class Player extends Phaser.GameObjects.Rectangle {
   playerName: string;
 
   constructor(scene: Scene, x: number, y: number, playerName: string) {
-    super(scene, x, y, 50, 50, 0x00ff00);
+    super(scene, x, y, "player");
     this.health = 3;
     this.damageCooldown = false;
     this.playerName = playerName;
 
-    // Añadir el jugador a la escena y añadir física
+    // Add the player to the scene and add physics
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
     const body = this.body as Phaser.Physics.Arcade.Body;
-    body.setCollideWorldBounds(true);
-    body.setSize(50, 50);
+    body.setSize(24, 24);
 
-    // Grupo de balas del jugador
+    // Player's bullet group
     this.bullets = this.scene.physics.add.group({
-      classType: Phaser.GameObjects.Rectangle,
+      classType: Phaser.GameObjects.Sprite,
       runChildUpdate: true,
     });
 
-    // Asegurarse de que las teclas solo se configuren si el sistema de entrada está listo
+    // Ensure that keys are only set if the input system is ready
     if (this.scene.input.keyboard) {
       this.cursors = this.scene.input.keyboard.createCursorKeys();
       this.wasdKeys = {
@@ -55,23 +54,36 @@ export class Player extends Phaser.GameObjects.Rectangle {
 
   update() {
     if (this.health <= 0) {
-      return; // No actualizar el juego si el jugador está muerto
+      return; // Do not update the game if the player is dead
     }
 
-    // Movimiento del jugador con WASD
+    const body = this.body as Phaser.Physics.Arcade.Body;
+    let velocityX = 0;
+    let velocityY = 0;
+
+    // Movement control
     if (this.wasdKeys.left.isDown) {
-      this.x -= 5;
+      velocityX = -200;
     } else if (this.wasdKeys.right.isDown) {
-      this.x += 5;
+      velocityX = 200;
     }
 
     if (this.wasdKeys.up.isDown) {
-      this.y -= 5;
+      velocityY = -200;
     } else if (this.wasdKeys.down.isDown) {
-      this.y += 5;
+      velocityY = 200;
     }
 
-    // Disparar balas con ESPACIO o las flechas
+    // Set the body's velocity
+    body.setVelocity(velocityX, velocityY);
+
+    // Calculate the sprite's rotation based on the movement direction
+    if (velocityX !== 0 || velocityY !== 0) {
+      const angle = Math.atan2(velocityY, velocityX) + Phaser.Math.DegToRad(90);
+      this.setRotation(angle);
+    }
+
+    // Shoot bullets with SPACE or arrow keys
     if (
       Phaser.Input.Keyboard.JustDown(this.cursors.left) ||
       Phaser.Input.Keyboard.JustDown(this.cursors.right) ||
@@ -83,55 +95,62 @@ export class Player extends Phaser.GameObjects.Rectangle {
   }
 
   shootBullet() {
-    // Crear una bala desde la posición del jugador
-    const bullet = this.bullets.get() as Phaser.GameObjects.Rectangle;
+    // Create a bullet from the player's position
+    const bullet = this.bullets.get() as Phaser.GameObjects.Sprite;
 
     if (bullet) {
-      // Ajustar la forma de la bala y propiedades
+      // Adjust the shape of the bullet and properties
+      bullet.setTexture("laser-bolts");
+      bullet.play("player-shoot");
       bullet.setPosition(this.x, this.y);
-      bullet.setFillStyle(0x0000ff);
-      bullet.setSize(10, 10);
-      bullet.setActive(true);
-      bullet.setVisible(true);
 
-      // Añadir física para que la bala se mueva
+      // Add physics so the bullet moves
       this.scene.physics.add.existing(bullet);
       const bulletBody = bullet.body as Phaser.Physics.Arcade.Body;
 
-      if (bulletBody) {
-        // Ajustar la caja de colisión de la bala al tamaño visible
-        bulletBody.setSize(10, 10);
+      // Adjust the bullet's collision box to the visible size
+      bulletBody.setSize(16, 16);
 
-        // Determinar la dirección de disparo según las teclas presionadas
-        if (this.cursors.left.isDown) {
-          bulletBody.setVelocityX(-300);
-          bulletBody.setVelocityY(0);
-        } else if (this.cursors.right.isDown) {
-          bulletBody.setVelocityX(300);
-          bulletBody.setVelocityY(0);
-        } else if (this.cursors.up.isDown) {
-          bulletBody.setVelocityY(-300);
-          bulletBody.setVelocityX(0);
-        } else if (this.cursors.down.isDown) {
-          bulletBody.setVelocityY(300);
-          bulletBody.setVelocityX(0);
-        } else {
-          bulletBody.setVelocityY(-300);
-        }
+      // Determine the shooting direction based on the pressed keys and player's speed
+      const playerVelocity = this.body as Phaser.Physics.Arcade.Body;
+      const speed = 200;
 
-        bulletBody.setCollideWorldBounds(true);
-        bulletBody.onWorldBounds = true;
-
-        // Evento que destruye la bala cuando sale del mundo
-        bulletBody.world.on(
-          "worldbounds",
-          (body: Phaser.Physics.Arcade.Body) => {
-            if (body === bulletBody) {
-              bullet.destroy(); // Reciclar la bala
-            }
-          }
-        );
+      if (this.cursors.left.isDown) {
+        bulletBody.setVelocity(-speed, playerVelocity.velocity.y / 2);
+        bullet.rotation =
+          Math.atan2(playerVelocity.velocity.y / 2, -speed) +
+          Phaser.Math.DegToRad(90);
+      } else if (this.cursors.right.isDown) {
+        bulletBody.setVelocity(speed, playerVelocity.velocity.y / 2);
+        bullet.rotation =
+          Math.atan2(playerVelocity.velocity.y / 2, speed) +
+          Phaser.Math.DegToRad(90);
+      } else if (this.cursors.up.isDown) {
+        bulletBody.setVelocity(playerVelocity.velocity.x / 2, -speed);
+        bullet.rotation =
+          Math.atan2(-speed, playerVelocity.velocity.x / 2) +
+          Phaser.Math.DegToRad(90);
+      } else if (this.cursors.down.isDown) {
+        bulletBody.setVelocity(playerVelocity.velocity.x / 2, speed);
+        bullet.rotation =
+          Math.atan2(speed, playerVelocity.velocity.x / 2) +
+          Phaser.Math.DegToRad(90);
       }
+
+      // Make the bullet destroy itself automatically after a certain time
+      this.scene.time.addEvent({
+        delay: 2000, // Duration in milliseconds
+        callback: () => {
+          bullet.destroy();
+        },
+      });
+
+      // Event that destroys the bullet when it leaves the world
+      bulletBody.world.on("worldbounds", (body: Phaser.Physics.Arcade.Body) => {
+        if (body === bulletBody) {
+          bullet.destroy(); // Recycle the bullet
+        }
+      });
     }
   }
 
@@ -151,11 +170,16 @@ export class Player extends Phaser.GameObjects.Rectangle {
       duration: 500,
       onUpdate: (tween) => {
         const value = Math.floor(tween.getValue());
-        this.setFillStyle(value % 2 === 0 ? 0x800080 : 0x00ff00);
+
+        if (value % 2 === 0) {
+          this.setAlpha(0);
+        } else {
+          this.setAlpha(1);
+        }
       },
       onComplete: () => {
         this.damageCooldown = false;
-        this.setFillStyle(0x00ff00); // Ensure the player is fully visible after blinking
+        this.setAlpha(1);
       },
     });
   }
@@ -165,3 +189,4 @@ export class Player extends Phaser.GameObjects.Rectangle {
     await addScore(this.playerName, (this.scene as GameScene).score);
   }
 }
+
