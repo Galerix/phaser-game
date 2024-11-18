@@ -6,8 +6,8 @@ import { GameOver } from "./scenes/GameOver";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: AUTO,
-  width: 800,
-  height: 600,
+  width: 1920,
+  height: 1080,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
