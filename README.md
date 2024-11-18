@@ -1,91 +1,138 @@
-# Phaser Game with Next.js
+# Space Shooter Game
 
-Este es un proyecto que combina [Phaser](https://phaser.io) para la creación de juegos y [Next.js](https://nextjs.org) para la interfaz de usuario y la gestión del backend. El juego incluye características como un sistema de puntuación, enemigos que disparan, y un tablero de puntuaciones.
+A fast-paced space shooter game built with Phaser 3, Next.js, and TypeScript. Features real-time multiplayer combat, persistent leaderboards, and modern web technologies.
 
-## Comenzando
+![Space Shooter Game](public/assets/logo.png)
 
-Antes de comenzar, asegúrate de configurar las variables de entorno necesarias. Crea un archivo `.env` en la raíz del proyecto y añade las siguientes variables:
+## Features
+
+- **Dynamic Combat System**: WASD movement controls with directional shooting
+- **Enemy AI**: Intelligent enemy behavior with tracking and shooting mechanics
+- **Real-time Score Tracking**: Live scoreboard updates using PostgreSQL
+- **Modern Tech Stack**: Built with Next.js 15, Phaser 3, and TypeScript
+- **Responsive Design**: Seamless gameplay across different screen sizes
+- **Persistent Leaderboards**: Global rankings stored in PostgreSQL
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18.x or higher
+- PostgreSQL database
+- pnpm, npm, or yarn
+
+### Environment Setup
+
+1. Create a `.env` file in the root directory:
 
 ```bash
-DATABASE_URL="postgresql://user:password@host:port/database
+DATABASE_URL="postgresql://user:password@host:port/database"
 ```
 
-Después de configurar las variables de entorno, ejecuta el siguiente comando para generar el cliente de Prisma:
+2. Set up your PostgreSQL database and update the connection string accordingly.
+
+### Database Setup with Prisma
+
+1. Install project dependencies:
+
+```bash
+npm install
+```
+
+2. Generate Prisma Client:
 
 ```bash
 npx prisma generate
-# o
-yarn prisma generate
-# o
-pnpm prisma generate
-# o
-bun prisma generate
 ```
 
-Por último, ejecuta el siguiente comando para aplicar las migraciones de la base de datos:
+3. Create and apply database migrations:
 
 ```bash
-npx prisma migrate dev
-# o
-yarn prisma migrate dev
-# o
-pnpm prisma migrate dev
-# o
-bun prisma migrate dev
+# Create a new migration
+npx prisma migrate dev --name init
+
+# Apply existing migrations
+npx prisma migrate deploy
 ```
 
-Finalmente, ejecuta el servidor de desarrollo:
+4. (Optional) Explore your database with Prisma Studio:
 
 ```bash
+npx prisma studio
+```
+
+### Running the Application
+
+```bash
+# Start development server
 npm run dev
-# o
-yarn dev
-# o
-pnpm dev
-# o
-bun dev
 ```
 
-Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
+Visit `http://localhost:3000` to start playing!
 
-Puedes comenzar a editar la página modificando `app/page.tsx`. La página se actualizará automáticamente a medida que editas el archivo.
+## Game Controls
 
-## Estructura del Proyecto
+- **Movement**: WASD keys
+- **Shooting**: Arrow keys (⬆️⬅️⬇️➡️)
+- **Objective**: Destroy enemies and survive as long as possible
 
-- `src/app`: Contiene los componentes y páginas de Next.js.
-- `src/game`: Contiene la lógica del juego, incluyendo escenas, objetos y eventos.
-- `src/database`: Contiene la configuración y funciones de Prisma para la base de datos.
-- `public`: Contiene archivos estáticos como imágenes y fuentes.
-- `prisma`: Contiene el esquema de Prisma y las migraciones de la base de datos.
+## Tech Stack
 
-## Características
+- **Frontend**: Next.js 15, React 19
+- **Game Engine**: Phaser 3
+- **Database**: PostgreSQL with Prisma ORM
+- **Styling**: Tailwind CSS
+- **Language**: TypeScript
 
-- **Phaser**: Utilizado para la lógica del juego.
-- **Next.js**: Utilizado para la interfaz de usuario y el backend.
-- **Prisma**: Utilizado para la gestión de la base de datos.
-- **Tailwind CSS**: Utilizado para el diseño y estilos.
+## Project Structure
 
-## Scripts Disponibles
+```
+├── src/
+│   ├── app/          # Next.js app directory
+│   ├── components/   # React components
+│   ├── game/         # Phaser game logic
+│   │   ├── objects/  # Game objects (Player, Enemy)
+│   │   └── scenes/   # Game scenes
+│   └── database/     # Database operations
+├── prisma/          # Database schema and migrations
+│   ├── schema.prisma # Database schema
+│   └── migrations/   # Database migrations
+└── public/          # Static assets
+```
 
-- `dev`: Inicia el servidor de desarrollo.
-- `build`: Construye la aplicación para producción.
-- `start`: Inicia el servidor en modo producción.
-- `lint`: Ejecuta ESLint para encontrar y arreglar problemas en el código.
-- `postinstall`: Genera el cliente de Prisma.
-- `vercel-build`: Script de construcción para Vercel.
+## Database Schema
 
-## Aprender Más
+```prisma
+model Score {
+  id         Int      @id @default(autoincrement())
+  playerName String   @default("Player")
+  score      Int
+  createdAt  DateTime @default(now())
+}
+```
 
-Para aprender más sobre las tecnologías utilizadas en este proyecto, consulta los siguientes recursos:
+## Contributing
 
-- [Documentación de Next.js](https://nextjs.org/docs)
-- [Documentación de Phaser](https://phaser.io/docs)
-- [Documentación de Prisma](https://www.prisma.io/docs)
-- [Documentación de Tailwind CSS](https://tailwindcss.com/docs)
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Despliegue en Vercel
+## License
 
-La forma más fácil de desplegar tu aplicación Next.js es usar la [Plataforma Vercel](https://vercel.com) de los creadores de Next.js.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Consulta la [documentación de despliegue de Next.js](https://nextjs.org/docs/deployment) para más detalles.
+## Acknowledgments
+
+- [Phaser](https://phaser.io/) - HTML5 game framework
+- [Next.js](https://nextjs.org/) - React framework
+- [Prisma](https://www.prisma.io/) - Database ORM
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+
+## Contact
+
+David Galera Rodriguez - [LinkedIn](https://es.linkedin.com/in/david-galera-rodriguez-47a65b1b6)
+
+Project Link: [https://github.com/Galerix/phaser-game](https://github.com/Galerix/phaser-game)
 
