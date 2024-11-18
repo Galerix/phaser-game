@@ -26,14 +26,11 @@ export class GameScene extends Scene {
   create() {
     const { width, height } = this.scale;
 
-    // Adjust scaling factor to make scene responsive
-    const scaleFactor = Math.min(width / 800, height / 600);
-
     this.createGalaxyBackground(width, height);
     this.createAnimations();
-    this.createPlayer(width, height, scaleFactor);
+    this.createPlayer(width, height);
     this.createEnemies(width, height);
-    this.createHUD(width, scaleFactor);
+    this.createHUD(width);
     this.setupCollisions();
 
     this.cameras.main.roundPixels = false; // Avoid sprite blurring
@@ -135,8 +132,9 @@ export class GameScene extends Scene {
     });
   }
 
-  private createPlayer(width: number, height: number, scaleFactor: number) {
+  private createPlayer(width: number, height: number) {
     // Virtual joystick
+
     let movementKeys: {
       up: Phaser.Input.Keyboard.Key;
       down: Phaser.Input.Keyboard.Key;
@@ -166,19 +164,19 @@ export class GameScene extends Scene {
       };
     } else {
       const leftJoystick = new VirtualJoystick(this, {
-        x: 100 * scaleFactor,
-        y: height - 100 * scaleFactor,
-        radius: 50 * scaleFactor,
-        base: this.add.circle(0, 0, 50 * scaleFactor, 0x888888),
-        thumb: this.add.circle(0, 0, 25 * scaleFactor, 0xcccccc),
+        x: 100,
+        y: height - 100,
+        radius: 50,
+        base: this.add.circle(0, 0, 50, 0x888888),
+        thumb: this.add.circle(0, 0, 25, 0xcccccc),
       });
 
       const rightJoystick = new VirtualJoystick(this, {
-        x: width - 100 * scaleFactor,
-        y: height - 100 * scaleFactor,
-        radius: 50 * scaleFactor,
-        base: this.add.circle(0, 0, 50 * scaleFactor, 0x888888),
-        thumb: this.add.circle(0, 0, 25 * scaleFactor, 0xcccccc),
+        x: width - 100,
+        y: height - 100,
+        radius: 50,
+        base: this.add.circle(0, 0, 50, 0x888888),
+        thumb: this.add.circle(0, 0, 25, 0xcccccc),
       });
 
       movementKeys = leftJoystick.createCursorKeys();
@@ -235,85 +233,70 @@ export class GameScene extends Scene {
     graphics.generateTexture("galaxyBackground", width * 2, height * 2);
     this.add.image(0, 0, "galaxyBackground").setOrigin(0).setScrollFactor(0.5);
   }
-  private createHUD(width: number, scaleFactor: number) {
+  private createHUD(width: number) {
     const hudContainer = this.add.container(0, 0);
 
     // General HUD style
     const textStyle = {
-      fontSize: `${22 * scaleFactor}px`,
+      fontSize: "22px",
       color: "#e0e0e0",
       fontFamily: "Arial",
       fontStyle: "bold",
       stroke: "#000",
-      strokeThickness: 4 * scaleFactor,
+      strokeThickness: 4,
       shadow: {
-        offsetX: 3 * scaleFactor,
-        offsetY: 3 * scaleFactor,
+        offsetX: 3,
+        offsetY: 3,
         color: "#000000",
-        blur: 5 * scaleFactor,
+        blur: 5,
         fill: true,
       },
     };
 
     // Player title with professional design
     hudContainer.add(
-      this.add.text(
-        20 * scaleFactor,
-        20 * scaleFactor,
-        `Pilot: ${this.playerName}`,
-        {
-          ...textStyle,
-          fontSize: `${24 * scaleFactor}px`,
-          color: "#00e5ff",
-          strokeThickness: 5 * scaleFactor,
-        }
-      )
+      this.add.text(20, 20, `Pilot: ${this.playerName}`, {
+        ...textStyle,
+        fontSize: "24px",
+        color: "#00e5ff",
+        strokeThickness: 5,
+      })
     );
 
     // Player score
-    this.scoreText = this.add.text(
-      20 * scaleFactor,
-      60 * scaleFactor,
-      "Score: 0",
-      {
-        ...textStyle,
-        fontSize: `${20 * scaleFactor}px`,
-        color: "#ffffff",
-      }
-    );
+    this.scoreText = this.add.text(20, 60, "Score: 0", {
+      ...textStyle,
+      fontSize: "20px",
+      color: "#ffffff",
+    });
     hudContainer.add(this.scoreText);
 
     // Player health
-    this.healthText = this.add.text(
-      20 * scaleFactor,
-      100 * scaleFactor,
-      `Health: ${this.player.health}`,
-      {
-        ...textStyle,
-        fontSize: `${20 * scaleFactor}px`,
-        color: "#ff4444",
-      }
-    );
+    this.healthText = this.add.text(20, 100, `Health: ${this.player.health}`, {
+      ...textStyle,
+      fontSize: "20px",
+      color: "#ff4444",
+    });
     hudContainer.add(this.healthText);
 
     // Enhanced control instructions
     hudContainer.add(
       this.add
-        .text(width - 20 * scaleFactor, 20 * scaleFactor, "Move: WASD", {
+        .text(width - 20, 20, "Move: WASD", {
           ...textStyle,
-          fontSize: `${18 * scaleFactor}px`,
+          fontSize: "18px",
           color: "#00ff88",
-          strokeThickness: 3 * scaleFactor,
+          strokeThickness: 3,
         })
         .setOrigin(1, 0)
     );
     hudContainer.add(
       this.add
-        .text(width - 20 * scaleFactor, 50 * scaleFactor, "Shoot: Arrows", {
+        .text(width - 20, 50, "Shoot: Arrows", {
           ...textStyle,
-          fontSize: `${18 * scaleFactor}px`,
+          fontSize: "18px",
           color: "#ff8800",
-          strokeThickness: 3 * scaleFactor,
+          strokeThickness: 3,
         })
         .setOrigin(1, 0)
     );
@@ -394,3 +377,4 @@ export class GameScene extends Scene {
       }
     };
 }
+

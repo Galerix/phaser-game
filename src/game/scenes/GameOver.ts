@@ -1,6 +1,6 @@
-import { Scene } from "phaser";
+import Phaser from "phaser";
 
-export class GameOver extends Scene {
+export class GameOver extends Phaser.Scene {
   constructor() {
     super({ key: "GameOver" });
   }
@@ -8,21 +8,18 @@ export class GameOver extends Scene {
   create() {
     const { width, height } = this.scale;
 
-    // Adjust scaling factor to make scene responsive
-    const scaleFactor = Math.min(width / 800, height / 600);
-
     // Game Over text
     const gameOverText = this.add
-      .text(width / 2, height / 2 - 100 * scaleFactor, "Game Over", {
-        fontSize: `${64 * scaleFactor}px`,
+      .text(width / 2, height / 2 - 100, "Game Over", {
+        fontSize: "64px",
         color: "#38bdf8", // Cyan color for accent
         fontFamily: "Arial",
         fontStyle: "bold",
         shadow: {
-          offsetX: 4 * scaleFactor,
-          offsetY: 4 * scaleFactor,
+          offsetX: 4,
+          offsetY: 4,
           color: "#000000",
-          blur: 15 * scaleFactor,
+          blur: 15,
           fill: true,
         },
       })
@@ -40,24 +37,19 @@ export class GameOver extends Scene {
 
     // Instructions text to restart
     const restartText = this.add
-      .text(
-        width / 2,
-        height / 2 + 50 * scaleFactor,
-        "Click or press Enter to restart",
-        {
-          fontSize: `${28 * scaleFactor}px`,
-          color: "#e2e8f0", // Light gray color for instructions
-          fontFamily: "Arial",
-          fontStyle: "bold",
-          shadow: {
-            offsetX: 3 * scaleFactor,
-            offsetY: 3 * scaleFactor,
-            color: "#000000",
-            blur: 10 * scaleFactor,
-            fill: true,
-          },
-        }
-      )
+      .text(width / 2, height / 2 + 50, "Click or press Enter to restart", {
+        fontSize: "28px",
+        color: "#e2e8f0", // Light gray color for instructions
+        fontFamily: "Arial",
+        fontStyle: "bold",
+        shadow: {
+          offsetX: 3,
+          offsetY: 3,
+          color: "#000000",
+          blur: 10,
+          fill: true,
+        },
+      })
       .setOrigin(0.5);
 
     // Blinking effect for the restart text
@@ -72,18 +64,18 @@ export class GameOver extends Scene {
 
     // Button to go to scoreboards
     const scoreboardsButton = this.add
-      .text(width / 2, height / 2 + 150 * scaleFactor, "Go to Scoreboards", {
-        fontSize: `${28 * scaleFactor}px`,
+      .text(width / 2, height / 2 + 150, "Go to Scoreboards", {
+        fontSize: "28px",
         color: "#38bdf8", // Cyan color for accent
         fontFamily: "Arial",
         fontStyle: "bold",
         backgroundColor: "#1e293b", // Dark blue-gray background for the button
-        padding: { x: 15 * scaleFactor, y: 8 * scaleFactor },
+        padding: { x: 15, y: 8 },
         shadow: {
-          offsetX: 3 * scaleFactor,
-          offsetY: 3 * scaleFactor,
+          offsetX: 3,
+          offsetY: 3,
           color: "#000000",
-          blur: 10 * scaleFactor,
+          blur: 10,
           fill: true,
         },
       })
