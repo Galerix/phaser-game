@@ -16,6 +16,9 @@ const config: Phaser.Types.Core.GameConfig = {
 
   parent: "game-container",
   backgroundColor: "#000000",
+  input: {
+    activePointers: 2,
+  },
   physics: {
     default: "arcade",
     arcade: {
