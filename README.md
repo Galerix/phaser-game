@@ -1,6 +1,6 @@
-# Space Shooter Game
+# Space Shooter Game 🚀
 
-A fast-paced space shooter game built with Phaser 3, Next.js, and TypeScript. Features real-time multiplayer combat, persistent leaderboards, and modern web technologies.
+A fast-paced space shooter game built with Phaser 3, Next.js, and TypeScript.
 
 ![Space Shooter Game](public/assets/logo.png)
 
@@ -8,7 +8,6 @@ A fast-paced space shooter game built with Phaser 3, Next.js, and TypeScript. Fe
 
 - **Dynamic Combat System**: WASD movement controls with directional shooting
 - **Enemy AI**: Intelligent enemy behavior with tracking and shooting mechanics
-- **Real-time Score Tracking**: Live scoreboard updates using PostgreSQL
 - **Modern Tech Stack**: Built with Next.js 15, Phaser 3, and TypeScript
 - **Responsive Design**: Seamless gameplay across different screen sizes
 - **Persistent Leaderboards**: Global rankings stored in PostgreSQL
